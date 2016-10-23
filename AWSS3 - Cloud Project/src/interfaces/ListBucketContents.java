@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.AmazonS3;
 public interface ListBucketContents {
 
 	/** Lists all buckets along with all objects inside them */
-	public void listContents(AmazonS3 S3);
+	public void listContents(AmazonS3 s3);
 
 	/** Returns the total number of buckets */
 	public int totalNumberOfBuckets(AmazonS3 s3);
