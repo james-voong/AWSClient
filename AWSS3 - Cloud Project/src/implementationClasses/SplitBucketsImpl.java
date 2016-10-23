@@ -1,0 +1,60 @@
+package implementationClasses;
+
+import java.util.UUID;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+
+import interfaces.SplitBuckets;
+
+public class SplitBucketsImpl implements SplitBuckets {
+
+	// Method to split buckets
+	@Override
+	public void splitTheBuckets(AmazonS3 s3, int bucketToSplit, int itemSplitPoint) {
+		int currentBucket = 0;
+		int currentItem = 0;
+		String newBucket = "";
+		String splitBucketName = "";
+
+		for (Bucket bucket : s3.listBuckets()) {
+			currentBucket++;
+			if (currentBucket == bucketToSplit) {
+				splitBucketName = bucket.getName();
+
+				// Create a new bucket for the split
+				newBucket = bucket.getName() + "-split-" + UUID.randomUUID();
+				s3.createBucket(newBucket);
+
+				ObjectListing objectListing = s3.listObjects(new ListObjectsRequest().withBucketName(splitBucketName));
+
+				// Iterate through all items until split point is found
+				for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+					currentItem++;
+
+					// Upon finding the split point
+					if (currentItem >= itemSplitPoint) {
+
+						// Download the object
+						S3Object object = s3.getObject(new GetObjectRequest(splitBucketName, objectSummary.getKey()));
+
+						// Put the downloaded object in new bucket
+						s3.putObject(new PutObjectRequest(newBucket, objectSummary.getKey(), object.getObjectContent(),
+								object.getObjectMetadata()));
+
+						// Delete the old object from original bucket
+						s3.deleteObject(bucket.getName(), objectSummary.getKey());
+					}
+				}
+			}
+		}
+		System.out.println("'" + splitBucketName + "' has been split into '" + newBucket + "'");
+	}
+
+}
