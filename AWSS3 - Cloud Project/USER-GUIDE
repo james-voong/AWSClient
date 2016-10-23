@@ -1,0 +1,27 @@
+USER-GUIDE
+
+Date 22/10/2016
+Project Team Members:
+James Voong
+
+Software Description:
+A java program for interacting with the AWSS3 service. 
+
+== WHAT IS IT? ==
+Through the use of the client, enables the user to:
+ -List all buckets and their contents
+ -Merge two buckets together into one bucket
+ -Move an object from one bucket into another
+ -Split a bucket into two buckets
+
+== REQUIREMENTS ==
+-AWSS3 account
+-Java
+-Internet
+-Eclipse (due to the client running through the eclipse console)
+
+== COMPILING IT ==
+Java compiler that has AWSS3 services installed (tested with Eclipse)
+
+== LAUNCHING IT ==
+Launched through eclipse for testing
