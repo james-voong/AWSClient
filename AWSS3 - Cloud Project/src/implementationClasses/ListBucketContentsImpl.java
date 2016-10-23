@@ -8,8 +8,10 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import interfaces.ListBucketContents;
 
+/** Implementation class for ListBucketContents */
 public class ListBucketContentsImpl implements ListBucketContents {
 
+	/** Prints out all buckets and their respective contents in console */
 	@Override
 	public void listContents(AmazonS3 s3) {
 		// Integer for numbering buckets
@@ -34,7 +36,7 @@ public class ListBucketContentsImpl implements ListBucketContents {
 		}
 	}
 
-	// Returns total number of buckets
+	/** Returns total number of buckets */
 	@Override
 	public int totalNumberOfBuckets(AmazonS3 s3) {
 		int totalBuckets = 0;
@@ -45,7 +47,7 @@ public class ListBucketContentsImpl implements ListBucketContents {
 		return totalBuckets;
 	}
 
-	// Returns total number of items inside a given bucket
+	/** Returns total number of items inside a given bucket */
 	@Override
 	public int totalNumberOfItemsInsideBucket(AmazonS3 s3, int bucketNumber) {
 

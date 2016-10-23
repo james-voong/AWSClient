@@ -11,9 +11,10 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import interfaces.MergeBuckets;
 
+/** Implementation class of MergeBuckets */
 public class MergeBucketsImpl implements MergeBuckets {
 
-	// Method to merge buckets
+	/** Merges two buckets together so that only one remains */
 	@Override
 	public void mergeTheBuckets(AmazonS3 s3, int bucketToRemain, int bucketToDelete) {
 		int currentBucket = 0;

@@ -21,6 +21,9 @@ import interfaces.MergeBuckets;
 import interfaces.MoveObjects;
 import interfaces.SplitBuckets;
 
+/**
+ * Client class instantiates AWS client and provides a UI for inputting commands
+ */
 public class Client {
 
 	/*
@@ -34,6 +37,7 @@ public class Client {
 
 	private static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
+	/** Main method for user interaction */
 	public static void main(String[] args) throws IOException {
 
 		AWSCredentials credentials = null;
@@ -84,7 +88,7 @@ public class Client {
 
 	}
 
-	// For when the user wants to move objects from one bucket to another
+	/** Client for when moveObjects is to be used */
 	public static void moveObjectsClient(AmazonS3 s3) throws IOException {
 		listContentsObj.listContents(s3);
 
@@ -157,6 +161,7 @@ public class Client {
 
 	}
 
+	/** Client for when mergeBuckets is to be used */
 	public static void mergeBucketsClient(AmazonS3 s3) throws IOException {
 		listContentsObj.listContents(s3);
 		int totalBuckets = listContentsObj.totalNumberOfBuckets(s3);
@@ -192,6 +197,7 @@ public class Client {
 		mergeObj.mergeTheBuckets(s3, bucketToRemain, bucketToDelete);
 	}
 
+	/** Client for when splitBucket is to be used */
 	public static void splitBucketClient(AmazonS3 s3) {
 		listContentsObj.listContents(s3);
 		int totalBuckets = listContentsObj.totalNumberOfBuckets(s3);

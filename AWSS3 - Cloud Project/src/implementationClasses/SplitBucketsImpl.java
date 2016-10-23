@@ -13,9 +13,10 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import interfaces.SplitBuckets;
 
+/** Implementation class of SplitBuckets */
 public class SplitBucketsImpl implements SplitBuckets {
 
-	// Method to split buckets
+	/** Splits a bucket from a given item point into two buckets */
 	@Override
 	public void splitTheBuckets(AmazonS3 s3, int bucketToSplit, int itemSplitPoint) {
 		int currentBucket = 0;

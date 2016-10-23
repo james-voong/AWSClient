@@ -11,11 +11,12 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import interfaces.MoveObjects;
 
+/** Implementation class of MoveObjects */
 public class MoveObjectsImpl implements MoveObjects {
 
 	S3Object object;
 
-	// Method to move objects
+	/** Moves an object from one bucket into another */
 	@Override
 	public void moveTheObjects(AmazonS3 s3, int bucketToMoveFrom, int itemToMove, int bucketToMoveTo) {
 		int currentBucket = 0;
