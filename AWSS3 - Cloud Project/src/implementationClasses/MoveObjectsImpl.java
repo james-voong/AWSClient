@@ -1,5 +1,9 @@
 package implementationClasses;
 
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -12,6 +16,8 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import interfaces.MoveObjects;
 
 /** Implementation class of MoveObjects */
+@WebService(endpointInterface = "interfaces.MoveObjects")
+@SOAPBinding(style = Style.RPC)
 public class MoveObjectsImpl implements MoveObjects {
 
 	S3Object object;

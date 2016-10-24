@@ -1,5 +1,9 @@
 package implementationClasses;
 
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
@@ -9,6 +13,8 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import interfaces.ListBucketContents;
 
 /** Implementation class for ListBucketContents */
+@WebService(endpointInterface = "interfaces.ListBucketContents")
+@SOAPBinding(style = Style.RPC)
 public class ListBucketContentsImpl implements ListBucketContents {
 
 	/** Prints out all buckets and their respective contents in console */

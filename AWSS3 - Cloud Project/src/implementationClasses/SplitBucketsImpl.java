@@ -2,6 +2,10 @@ package implementationClasses;
 
 import java.util.UUID;
 
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -14,6 +18,8 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import interfaces.SplitBuckets;
 
 /** Implementation class of SplitBuckets */
+@WebService(endpointInterface = "interfaces.SplitBuckets")
+@SOAPBinding(style = Style.RPC)
 public class SplitBucketsImpl implements SplitBuckets {
 
 	/** Splits a bucket from a given item point into two buckets */
