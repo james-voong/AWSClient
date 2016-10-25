@@ -12,4 +12,7 @@ public interface SplitBuckets {
 	/** Splits a bucket into two */
 	public void splitTheBuckets(int bucketToSplit, int itemSplitPoint);
 
+	/** Checks if the bucket to be created is unique and handles it */
+	public String checkForDuplicateBucket(String newBucketName);
+
 }

@@ -1,7 +1,5 @@
 package implementationClasses;
 
-import java.util.UUID;
-
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
@@ -24,6 +22,7 @@ import interfaces.SplitBuckets;
 public class SplitBucketsImpl implements SplitBuckets {
 
 	AmazonS3 s3;
+	String newBucketName;
 
 	/** Splits a bucket from a given item point into two buckets */
 	@Override
@@ -31,7 +30,6 @@ public class SplitBucketsImpl implements SplitBuckets {
 		s3 = Client.getClient();
 		int currentBucket = 0;
 		int currentItem = 0;
-		String newBucket = "";
 		String splitBucketName = "";
 
 		for (Bucket bucket : s3.listBuckets()) {
@@ -39,9 +37,12 @@ public class SplitBucketsImpl implements SplitBuckets {
 			if (currentBucket == bucketToSplit) {
 				splitBucketName = bucket.getName();
 
+				// Check if new bucket name exists yet or not
+				newBucketName = bucket.getName();
+				newBucketName = checkForDuplicateBucket(newBucketName);
+
 				// Create a new bucket for the split
-				newBucket = bucket.getName() + "-split-" + UUID.randomUUID();
-				s3.createBucket(newBucket);
+				s3.createBucket(newBucketName);
 
 				ObjectListing objectListing = s3.listObjects(new ListObjectsRequest().withBucketName(splitBucketName));
 
@@ -56,8 +57,8 @@ public class SplitBucketsImpl implements SplitBuckets {
 						S3Object object = s3.getObject(new GetObjectRequest(splitBucketName, objectSummary.getKey()));
 
 						// Put the downloaded object in new bucket
-						s3.putObject(new PutObjectRequest(newBucket, objectSummary.getKey(), object.getObjectContent(),
-								object.getObjectMetadata()));
+						s3.putObject(new PutObjectRequest(newBucketName, objectSummary.getKey(),
+								object.getObjectContent(), object.getObjectMetadata()));
 
 						// Delete the old object from original bucket
 						s3.deleteObject(bucket.getName(), objectSummary.getKey());
@@ -65,7 +66,18 @@ public class SplitBucketsImpl implements SplitBuckets {
 				}
 			}
 		}
-		System.out.println("'" + splitBucketName + "' has been split into '" + newBucket + "'");
+		System.out.println("'" + splitBucketName + "' has been split into '" + newBucketName + "'");
+	}
+
+	public String checkForDuplicateBucket(String newBucketName) {
+		// This 'for' loop deals with duplicate names
+		for (Bucket bucket : s3.listBuckets()) {
+			if (newBucketName.equals(bucket.getName())) {
+				newBucketName = newBucketName + "-copy";
+				checkForDuplicateBucket(newBucketName);
+			}
+		}
+		return newBucketName;
 	}
 
 }
