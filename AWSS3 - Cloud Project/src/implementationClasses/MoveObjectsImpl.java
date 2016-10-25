@@ -23,6 +23,8 @@ public class MoveObjectsImpl implements MoveObjects {
 
 	S3Object object;
 	AmazonS3 s3;
+	ObjectListing objectListing_BucketToMoveTo;
+	String objectKey;
 
 	/** Moves an object from one bucket into another */
 	@Override
@@ -31,7 +33,6 @@ public class MoveObjectsImpl implements MoveObjects {
 		s3 = Client.getClient();
 		int currentBucket = 0;
 		int currentItem = 0;
-		String key = "";
 		String bucketToMoveFromName = "";
 		String bucketToMoveToName = "";
 
@@ -47,8 +48,8 @@ public class MoveObjectsImpl implements MoveObjects {
 					currentItem++;
 					if (currentItem == itemToMove) {
 						object = s3.getObject(new GetObjectRequest(bucket.getName(), objectSummary.getKey()));
-						key = objectSummary.getKey();
-						s3.deleteObject(bucket.getName(), key);
+						objectKey = objectSummary.getKey();
+						s3.deleteObject(bucket.getName(), objectKey);
 						break;
 					}
 				}
@@ -61,11 +62,28 @@ public class MoveObjectsImpl implements MoveObjects {
 			currentBucket++;
 			if (currentBucket == bucketToMoveTo) {
 				bucketToMoveToName = bucket.getName();
-				s3.putObject(new PutObjectRequest(bucketToMoveToName, key, object.getObjectContent(),
+				objectListing_BucketToMoveTo = s3
+						.listObjects(new ListObjectsRequest().withBucketName(bucketToMoveToName));
+				objectKey = checkForDuplicateItems(objectKey);
+
+				s3.putObject(new PutObjectRequest(bucketToMoveToName, objectKey, object.getObjectContent(),
 						object.getObjectMetadata()));
 			}
 		}
-		System.out.println(key + " has been moved from '" + bucketToMoveFromName + "' to '" + bucketToMoveToName + "'");
+		System.out.println(
+				objectKey + " has been moved from '" + bucketToMoveFromName + "' to '" + bucketToMoveToName + "'");
+
+	}
+
+	public String checkForDuplicateItems(String objectKeyChecker) {
+		// This 'for' loop deals with duplicate names
+		for (S3ObjectSummary objectSummary : objectListing_BucketToMoveTo.getObjectSummaries()) {
+			if (objectKeyChecker.equals(objectSummary.getKey())) {
+				objectKeyChecker = objectKeyChecker + "-copy";
+				checkForDuplicateItems(objectKeyChecker);
+			}
+		}
+		return objectKeyChecker;
 	}
 
 }

@@ -12,4 +12,7 @@ public interface MergeBuckets {
 	/** Merges two buckets into one */
 	public void mergeTheBuckets(int bucketToRemain, int bucketToDelete);
 
+	/** Checks for duplicate items within a bucket */
+	public String checkForDuplicateItems(String objectKeyChecker);
+
 }

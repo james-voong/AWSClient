@@ -22,6 +22,8 @@ import interfaces.MergeBuckets;
 public class MergeBucketsImpl implements MergeBuckets {
 
 	AmazonS3 s3;
+	ObjectListing objectListing_Remain;
+	String objectKey;
 
 	/** Merges two buckets together so that only one remains */
 	@Override
@@ -36,6 +38,9 @@ public class MergeBucketsImpl implements MergeBuckets {
 			currentBucket++;
 			if (currentBucket == bucketToRemain) {
 				bucketToRemain_Name = bucket.getName();
+
+				// Create objectListing for bucketToRemain
+				objectListing_Remain = s3.listObjects(new ListObjectsRequest().withBucketName(bucketToRemain_Name));
 				break;
 			}
 		}
@@ -54,10 +59,13 @@ public class MergeBucketsImpl implements MergeBuckets {
 
 					// Download the object
 					S3Object object = s3.getObject(new GetObjectRequest(bucket.getName(), objectSummary.getKey()));
+					objectKey = objectSummary.getKey();
+
+					objectKey = checkForDuplicateItems(objectKey);
 
 					// Put the downloaded object in new location
-					s3.putObject(new PutObjectRequest(bucketToRemain_Name, objectSummary.getKey(),
-							object.getObjectContent(), object.getObjectMetadata()));
+					s3.putObject(new PutObjectRequest(bucketToRemain_Name, objectKey, object.getObjectContent(),
+							object.getObjectMetadata()));
 
 					// Delete the old object from original location
 					s3.deleteObject(bucketToDelete_Name, objectSummary.getKey());
@@ -67,6 +75,19 @@ public class MergeBucketsImpl implements MergeBuckets {
 		// Delete the old bucket
 		s3.deleteBucket(bucketToDelete_Name);
 		System.out.println("'" + bucketToDelete_Name + "' has been merged into '" + bucketToRemain_Name + "'");
+	}
+
+	/** Checks for duplicate items and renames them if there is a duplicate */
+	@Override
+	public String checkForDuplicateItems(String objectKeyChecker) {
+		// This 'for' loop deals with duplicate names
+		for (S3ObjectSummary objectSummary2 : objectListing_Remain.getObjectSummaries()) {
+			if (objectKeyChecker.equals(objectSummary2.getKey())) {
+				objectKeyChecker = objectKeyChecker + "-copy";
+				checkForDuplicateItems(objectKeyChecker);
+			}
+		}
+		return objectKeyChecker;
 	}
 
 }
