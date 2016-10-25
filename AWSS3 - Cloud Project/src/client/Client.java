@@ -35,26 +35,15 @@ public class Client {
 	private static MergeBuckets mergeObj = new MergeBucketsImpl();
 	private static SplitBuckets splitObj = new SplitBucketsImpl();
 
+	private static AmazonS3 s3;
+
 	private static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
 	/** Main method for user interaction */
 	public static void main(String[] args) throws IOException {
 
-		AWSCredentials credentials = null;
-		try {
-			credentials = new ProfileCredentialsProvider("default").getCredentials();
-		} catch (Exception e) {
-			throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
-					+ "Please make sure that your credentials file is at the correct "
-					+ "location (/home/voongjame/.aws/credentials), and is in valid format.", e);
-		}
-
-		// Instantiate a new client
-		AmazonS3 s3 = new AmazonS3Client(credentials);
-
-		// Set region
-		Region myRegion = Region.getRegion(Regions.AP_SOUTHEAST_2);
-		s3.setRegion(myRegion);
+		// Calls the method to instantiate the client
+		instantiateClient();
 
 		// Client for interaction with user
 		while (true) {
@@ -75,13 +64,13 @@ public class Client {
 
 			// Call method that user wanted
 			if (answer == 1) {
-				listContentsObj.listContents(s3);
+				listContentsObj.listContents();
 			} else if (answer == 2) {
-				moveObjectsClient(s3);
+				moveObjectsClient();
 			} else if (answer == 3) {
-				mergeBucketsClient(s3);
+				mergeBucketsClient();
 			} else if (answer == 4) {
-				splitBucketClient(s3);
+				splitBucketClient();
 			} else
 				System.out.println("\nInvalid option. Try again.\n");
 		}
@@ -89,11 +78,11 @@ public class Client {
 	}
 
 	/** Client for when moveObjects is to be used */
-	public static void moveObjectsClient(AmazonS3 s3) throws IOException {
-		listContentsObj.listContents(s3);
+	public static void moveObjectsClient() throws IOException {
+		listContentsObj.listContents();
 
 		// Get the total number of buckets
-		int totalBucketNumber = listContentsObj.totalNumberOfBuckets(s3);
+		int totalBucketNumber = listContentsObj.totalNumberOfBuckets();
 		int totalNumberOfItems = 0;
 		int bucketToMoveFrom = 0;
 		int itemToMove = 0;
@@ -113,7 +102,7 @@ public class Client {
 			}
 
 			// Get the total number of items inside bucket
-			totalNumberOfItems = listContentsObj.totalNumberOfItemsInsideBucket(s3, bucketToMoveFrom);
+			totalNumberOfItems = listContentsObj.totalNumberOfItemsInsideBucket(bucketToMoveFrom);
 
 			// If invalid input selected
 			if (bucketToMoveFrom <= 0 || bucketToMoveFrom > totalBucketNumber) {
@@ -157,14 +146,14 @@ public class Client {
 				bucketToMoveTo_Accepted = true;
 		}
 
-		moveObj.moveTheObjects(s3, bucketToMoveFrom, itemToMove, bucketToMoveTo);
+		moveObj.moveTheObjects(bucketToMoveFrom, itemToMove, bucketToMoveTo);
 
 	}
 
 	/** Client for when mergeBuckets is to be used */
-	public static void mergeBucketsClient(AmazonS3 s3) throws IOException {
-		listContentsObj.listContents(s3);
-		int totalBuckets = listContentsObj.totalNumberOfBuckets(s3);
+	public static void mergeBucketsClient() throws IOException {
+		listContentsObj.listContents();
+		int totalBuckets = listContentsObj.totalNumberOfBuckets();
 		int bucketToRemain = 0;
 		int bucketToDelete = 0;
 		boolean bucketToRemain_Accepted = false;
@@ -194,13 +183,13 @@ public class Client {
 			} else
 				bucketToDelete_Accepted = true;
 		}
-		mergeObj.mergeTheBuckets(s3, bucketToRemain, bucketToDelete);
+		mergeObj.mergeTheBuckets(bucketToRemain, bucketToDelete);
 	}
 
 	/** Client for when splitBucket is to be used */
-	public static void splitBucketClient(AmazonS3 s3) {
-		listContentsObj.listContents(s3);
-		int totalBuckets = listContentsObj.totalNumberOfBuckets(s3);
+	public static void splitBucketClient() {
+		listContentsObj.listContents();
+		int totalBuckets = listContentsObj.totalNumberOfBuckets();
 		int bucketToSplit = 0;
 		int itemSplitPoint = 0;
 		boolean bucketToSplit_Accepted = false;
@@ -220,7 +209,7 @@ public class Client {
 				bucketToSplit_Accepted = true;
 		}
 
-		int totalNumberOfItems = listContentsObj.totalNumberOfItemsInsideBucket(s3, bucketToSplit);
+		int totalNumberOfItems = listContentsObj.totalNumberOfItemsInsideBucket(bucketToSplit);
 
 		while (itemSplitPoint_Accepted == false) {
 			System.out.println("\nAt which item should the bucket be split? (Inclusive)");
@@ -236,7 +225,31 @@ public class Client {
 			} else
 				itemSplitPoint_Accepted = true;
 		}
-		splitObj.splitTheBuckets(s3, bucketToSplit, itemSplitPoint);
+		splitObj.splitTheBuckets(bucketToSplit, itemSplitPoint);
+	}
+
+	/** This method instantiates an AmazonS3 client */
+	public static void instantiateClient() {
+		AWSCredentials credentials = null;
+		try {
+			credentials = new ProfileCredentialsProvider("default").getCredentials();
+		} catch (Exception e) {
+			throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
+					+ "Please make sure that your credentials file is at the correct "
+					+ "location (/home/voongjame/.aws/credentials), and is in valid format.", e);
+		}
+
+		// Instantiate a new client
+		s3 = new AmazonS3Client(credentials);
+
+		// Set region
+		Region myRegion = Region.getRegion(Regions.AP_SOUTHEAST_2);
+		s3.setRegion(myRegion);
+	}
+
+	/** Getter to return the instantiated client */
+	public static AmazonS3 getClient() {
+		return s3;
 	}
 
 }

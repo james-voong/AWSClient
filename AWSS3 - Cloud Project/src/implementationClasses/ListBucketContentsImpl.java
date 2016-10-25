@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
+import client.Client;
 import interfaces.ListBucketContents;
 
 /** Implementation class for ListBucketContents */
@@ -17,9 +18,13 @@ import interfaces.ListBucketContents;
 @SOAPBinding(style = Style.RPC)
 public class ListBucketContentsImpl implements ListBucketContents {
 
+	AmazonS3 s3;
+
 	/** Prints out all buckets and their respective contents in console */
 	@Override
-	public void listContents(AmazonS3 s3) {
+	public void listContents() {
+
+		s3 = Client.getClient();
 		// Integer for numbering buckets
 		int bucketNumber = 0;
 
@@ -44,7 +49,7 @@ public class ListBucketContentsImpl implements ListBucketContents {
 
 	/** Returns total number of buckets */
 	@Override
-	public int totalNumberOfBuckets(AmazonS3 s3) {
+	public int totalNumberOfBuckets() {
 		int totalBuckets = 0;
 		for (@SuppressWarnings("unused")
 		Bucket bucket : s3.listBuckets()) {
@@ -55,7 +60,7 @@ public class ListBucketContentsImpl implements ListBucketContents {
 
 	/** Returns total number of items inside a given bucket */
 	@Override
-	public int totalNumberOfItemsInsideBucket(AmazonS3 s3, int bucketNumber) {
+	public int totalNumberOfItemsInsideBucket(int bucketNumber) {
 
 		int currentBucket = 0;
 		int totalNumberOfItems = 0;

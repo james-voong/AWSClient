@@ -13,6 +13,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
+import client.Client;
 import interfaces.MoveObjects;
 
 /** Implementation class of MoveObjects */
@@ -21,10 +22,13 @@ import interfaces.MoveObjects;
 public class MoveObjectsImpl implements MoveObjects {
 
 	S3Object object;
+	AmazonS3 s3;
 
 	/** Moves an object from one bucket into another */
 	@Override
-	public void moveTheObjects(AmazonS3 s3, int bucketToMoveFrom, int itemToMove, int bucketToMoveTo) {
+	public void moveTheObjects(int bucketToMoveFrom, int itemToMove, int bucketToMoveTo) {
+
+		s3 = Client.getClient();
 		int currentBucket = 0;
 		int currentItem = 0;
 		String key = "";

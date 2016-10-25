@@ -15,6 +15,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
+import client.Client;
 import interfaces.SplitBuckets;
 
 /** Implementation class of SplitBuckets */
@@ -22,9 +23,12 @@ import interfaces.SplitBuckets;
 @SOAPBinding(style = Style.RPC)
 public class SplitBucketsImpl implements SplitBuckets {
 
+	AmazonS3 s3;
+
 	/** Splits a bucket from a given item point into two buckets */
 	@Override
-	public void splitTheBuckets(AmazonS3 s3, int bucketToSplit, int itemSplitPoint) {
+	public void splitTheBuckets(int bucketToSplit, int itemSplitPoint) {
+		s3 = Client.getClient();
 		int currentBucket = 0;
 		int currentItem = 0;
 		String newBucket = "";

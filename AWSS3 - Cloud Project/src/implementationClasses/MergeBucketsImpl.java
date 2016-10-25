@@ -13,6 +13,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
+import client.Client;
 import interfaces.MergeBuckets;
 
 /** Implementation class of MergeBuckets */
@@ -20,9 +21,12 @@ import interfaces.MergeBuckets;
 @SOAPBinding(style = Style.RPC)
 public class MergeBucketsImpl implements MergeBuckets {
 
+	AmazonS3 s3;
+
 	/** Merges two buckets together so that only one remains */
 	@Override
-	public void mergeTheBuckets(AmazonS3 s3, int bucketToRemain, int bucketToDelete) {
+	public void mergeTheBuckets(int bucketToRemain, int bucketToDelete) {
+		s3 = Client.getClient();
 		int currentBucket = 0;
 		String bucketToDelete_Name = "";
 		String bucketToRemain_Name = "";
