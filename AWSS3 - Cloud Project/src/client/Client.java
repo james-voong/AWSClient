@@ -24,6 +24,7 @@ import interfaces.SplitBuckets;
 /**
  * Client class instantiates AWS client and provides a UI for inputting commands
  */
+
 public class Client {
 
 	/*

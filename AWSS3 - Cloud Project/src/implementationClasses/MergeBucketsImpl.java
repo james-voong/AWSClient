@@ -78,7 +78,6 @@ public class MergeBucketsImpl implements MergeBuckets {
 	}
 
 	/** Checks for duplicate items and renames them if there is a duplicate */
-	@Override
 	public String checkForDuplicateItems(String objectKeyChecker) {
 		// This 'for' loop deals with duplicate names
 		for (S3ObjectSummary objectSummary2 : objectListing_Remain.getObjectSummaries()) {

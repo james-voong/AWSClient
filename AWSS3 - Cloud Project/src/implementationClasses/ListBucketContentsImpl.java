@@ -59,7 +59,6 @@ public class ListBucketContentsImpl implements ListBucketContents {
 	}
 
 	/** Returns total number of items inside a given bucket */
-	@Override
 	public int totalNumberOfItemsInsideBucket(int bucketNumber) {
 
 		int currentBucket = 0;

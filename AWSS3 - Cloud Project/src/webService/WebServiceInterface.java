@@ -9,6 +9,10 @@ import interfaces.MergeBuckets;
 import interfaces.MoveObjects;
 import interfaces.SplitBuckets;
 
+/**
+ * This interface is used to bundle ListBucketContents, MergeBuckets,
+ * MoveObjects and SplitBuckets
+ */
 @WebService
 @SOAPBinding(style = Style.RPC)
 public interface WebServiceInterface extends ListBucketContents, MergeBuckets, MoveObjects, SplitBuckets {
