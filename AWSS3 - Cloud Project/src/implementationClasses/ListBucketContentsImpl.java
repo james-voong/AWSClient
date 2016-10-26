@@ -4,13 +4,18 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-import client.Client;
 import interfaces.ListBucketContents;
 
 /** Implementation class for ListBucketContents */
@@ -18,13 +23,13 @@ import interfaces.ListBucketContents;
 @SOAPBinding(style = Style.RPC)
 public class ListBucketContentsImpl implements ListBucketContents {
 
-	AmazonS3 s3;
+	private AmazonS3 s3;
 
 	/** Prints out all buckets and their respective contents in console */
 	@Override
 	public void listContents() {
 
-		s3 = Client.getClient();
+		instantiateClient();
 		// Integer for numbering buckets
 		int bucketNumber = 0;
 
@@ -76,6 +81,25 @@ public class ListBucketContentsImpl implements ListBucketContents {
 			}
 		}
 		return totalNumberOfItems;
+	}
+
+	public void instantiateClient() {
+		AWSCredentials credentials = null;
+		try {
+			credentials = new ProfileCredentialsProvider("default").getCredentials();
+		} catch (Exception e) {
+			throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
+					+ "Please make sure that your credentials file is at the correct "
+					+ "location (/home/voongjame/.aws/credentials), and is in valid format.", e);
+		}
+
+		// Instantiate a new client
+		s3 = new AmazonS3Client(credentials);
+
+		// Set region
+		Region myRegion = Region.getRegion(Regions.AP_SOUTHEAST_2);
+		s3.setRegion(myRegion);
+
 	}
 
 }

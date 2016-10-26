@@ -4,14 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-
 import implementationClasses.ListBucketContentsImpl;
 import implementationClasses.MergeBucketsImpl;
 import implementationClasses.MoveObjectsImpl;
@@ -20,6 +12,7 @@ import interfaces.ListBucketContents;
 import interfaces.MergeBuckets;
 import interfaces.MoveObjects;
 import interfaces.SplitBuckets;
+import webService.WebServiceImpl;
 
 /**
  * Client class instantiates AWS client and provides a UI for inputting commands
@@ -35,8 +28,7 @@ public class Client {
 	private static MoveObjects moveObj = new MoveObjectsImpl();
 	private static MergeBuckets mergeObj = new MergeBucketsImpl();
 	private static SplitBuckets splitObj = new SplitBucketsImpl();
-
-	private static AmazonS3 s3;
+	private static WebServiceImpl webServ = new WebServiceImpl();
 
 	private static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
@@ -44,7 +36,7 @@ public class Client {
 	public static void main(String[] args) throws IOException {
 
 		// Calls the method to instantiate the client
-		instantiateClient();
+		webServ.instantiateClient();
 
 		// Client for interaction with user
 		while (true) {
@@ -227,30 +219,6 @@ public class Client {
 				itemSplitPoint_Accepted = true;
 		}
 		splitObj.splitTheBuckets(bucketToSplit, itemSplitPoint);
-	}
-
-	/** This method instantiates an AmazonS3 client */
-	public static void instantiateClient() {
-		AWSCredentials credentials = null;
-		try {
-			credentials = new ProfileCredentialsProvider("default").getCredentials();
-		} catch (Exception e) {
-			throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
-					+ "Please make sure that your credentials file is at the correct "
-					+ "location (/home/voongjame/.aws/credentials), and is in valid format.", e);
-		}
-
-		// Instantiate a new client
-		s3 = new AmazonS3Client(credentials);
-
-		// Set region
-		Region myRegion = Region.getRegion(Regions.AP_SOUTHEAST_2);
-		s3.setRegion(myRegion);
-	}
-
-	/** Getter to return the instantiated client */
-	public static AmazonS3 getClient() {
-		return s3;
 	}
 
 }

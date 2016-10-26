@@ -4,6 +4,14 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+
 import implementationClasses.ListBucketContentsImpl;
 import implementationClasses.MergeBucketsImpl;
 import implementationClasses.MoveObjectsImpl;
@@ -17,6 +25,8 @@ import interfaces.SplitBuckets;
 @WebService(endpointInterface = "webService.WebServiceInterface")
 @SOAPBinding(style = Style.RPC)
 public class WebServiceImpl implements WebServiceInterface {
+
+	static AmazonS3 s3;
 
 	/** Wrapper that calls the listContents method */
 	@Override
@@ -71,5 +81,29 @@ public class WebServiceImpl implements WebServiceInterface {
 		SplitBuckets splitObj = new SplitBucketsImpl();
 		splitObj.splitTheBuckets(bucketToSplit, itemSplitPoint);
 	}
+
+	/** This method instantiates an AmazonS3 client */
+	public void instantiateClient() {
+		AWSCredentials credentials = null;
+		try {
+			credentials = new ProfileCredentialsProvider("default").getCredentials();
+		} catch (Exception e) {
+			throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
+					+ "Please make sure that your credentials file is at the correct "
+					+ "location (/home/voongjame/.aws/credentials), and is in valid format.", e);
+		}
+
+		// Instantiate a new client
+		s3 = new AmazonS3Client(credentials);
+
+		// Set region
+		Region myRegion = Region.getRegion(Regions.AP_SOUTHEAST_2);
+		s3.setRegion(myRegion);
+	}
+
+//	/** Getter to return the instantiated client */
+//	public AmazonS3 getClient() {
+//		return s3;
+	//	}
 
 }

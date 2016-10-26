@@ -4,7 +4,13 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
@@ -13,7 +19,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-import client.Client;
 import interfaces.MergeBuckets;
 
 /** Implementation class of MergeBuckets */
@@ -28,7 +33,7 @@ public class MergeBucketsImpl implements MergeBuckets {
 	/** Merges two buckets together so that only one remains */
 	@Override
 	public void mergeTheBuckets(int bucketToRemain, int bucketToDelete) {
-		s3 = Client.getClient();
+		instantiateClient();
 		int currentBucket = 0;
 		String bucketToDelete_Name = "";
 		String bucketToRemain_Name = "";
@@ -87,6 +92,25 @@ public class MergeBucketsImpl implements MergeBuckets {
 			}
 		}
 		return objectKeyChecker;
+	}
+
+	public void instantiateClient() {
+		AWSCredentials credentials = null;
+		try {
+			credentials = new ProfileCredentialsProvider("default").getCredentials();
+		} catch (Exception e) {
+			throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
+					+ "Please make sure that your credentials file is at the correct "
+					+ "location (/home/voongjame/.aws/credentials), and is in valid format.", e);
+		}
+
+		// Instantiate a new client
+		s3 = new AmazonS3Client(credentials);
+
+		// Set region
+		Region myRegion = Region.getRegion(Regions.AP_SOUTHEAST_2);
+		s3.setRegion(myRegion);
+
 	}
 
 }

@@ -17,4 +17,6 @@ import interfaces.SplitBuckets;
 @SOAPBinding(style = Style.RPC)
 public interface WebServiceInterface extends ListBucketContents, MergeBuckets, MoveObjects, SplitBuckets {
 
+	public void instantiateClient();
+
 }
