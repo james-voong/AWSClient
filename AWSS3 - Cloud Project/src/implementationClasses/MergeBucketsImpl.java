@@ -32,7 +32,7 @@ public class MergeBucketsImpl implements MergeBuckets {
 
 	/** Merges two buckets together so that only one remains */
 	@Override
-	public void mergeTheBuckets(int bucketToRemain, int bucketToDelete) {
+	public String mergeTheBuckets(int bucketToRemain, int bucketToDelete) {
 		instantiateClient();
 		int currentBucket = 0;
 		String bucketToDelete_Name = "";
@@ -79,7 +79,8 @@ public class MergeBucketsImpl implements MergeBuckets {
 		}
 		// Delete the old bucket
 		s3.deleteBucket(bucketToDelete_Name);
-		System.out.println("'" + bucketToDelete_Name + "' has been merged into '" + bucketToRemain_Name + "'");
+		String contents = ("'" + bucketToDelete_Name + "' has been merged into '" + bucketToRemain_Name + "'");
+		return contents;
 	}
 
 	/** Checks for duplicate items and renames them if there is a duplicate */

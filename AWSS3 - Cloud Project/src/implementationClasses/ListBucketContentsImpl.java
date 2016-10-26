@@ -27,17 +27,20 @@ public class ListBucketContentsImpl implements ListBucketContents {
 
 	/** Prints out all buckets and their respective contents in console */
 	@Override
-	public void listContents() {
-
+	public String[] listContents() {
+		String[] contents = new String[300];
+		int i = 0;
 		instantiateClient();
 		// Integer for numbering buckets
 		int bucketNumber = 0;
 
 		// List the buckets
-		System.out.println("Listing bucket(s):");
+		contents[i] = ("Listing bucket(s)");
+		i++;
 		for (Bucket bucket : s3.listBuckets()) {
 			bucketNumber++;
-			System.out.println(bucketNumber + ". " + bucket.getName());
+			contents[i] = (bucketNumber + ". " + bucket.getName());
+			i++;
 
 			ObjectListing objectListing = s3.listObjects(new ListObjectsRequest().withBucketName(bucket.getName()));
 
@@ -46,15 +49,19 @@ public class ListBucketContentsImpl implements ListBucketContents {
 
 			for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
 				itemNumber++;
-				System.out.println("  " + itemNumber + " - " + objectSummary.getKey());
+				contents[i] = ("  " + itemNumber + " - " + objectSummary.getKey());
+				i++;
 			}
-			System.out.println();
+			contents[i] = ("");
+			i++;
 		}
+		return contents;
 	}
 
 	/** Returns total number of buckets */
 	@Override
 	public int totalNumberOfBuckets() {
+		instantiateClient();
 		int totalBuckets = 0;
 		for (@SuppressWarnings("unused")
 		Bucket bucket : s3.listBuckets()) {
@@ -65,7 +72,7 @@ public class ListBucketContentsImpl implements ListBucketContents {
 
 	/** Returns total number of items inside a given bucket */
 	public int totalNumberOfItemsInsideBucket(int bucketNumber) {
-
+		instantiateClient();
 		int currentBucket = 0;
 		int totalNumberOfItems = 0;
 

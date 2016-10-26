@@ -3,7 +3,6 @@ package client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import implementationClasses.ListBucketContentsImpl;
 import implementationClasses.MergeBucketsImpl;
 import implementationClasses.MoveObjectsImpl;
@@ -57,7 +56,15 @@ public class Client {
 
 			// Call method that user wanted
 			if (answer == 1) {
-				listContentsObj.listContents();
+				System.out.println("\nPlease wait...");
+				String[] contents = listContentsObj.listContents();
+				for (String item : contents) {
+					if (item == null) {
+						break;
+					}
+					System.out.println(item);
+				}
+
 			} else if (answer == 2) {
 				moveObjectsClient();
 			} else if (answer == 3) {
@@ -72,7 +79,14 @@ public class Client {
 
 	/** Client for when moveObjects is to be used */
 	public static void moveObjectsClient() throws IOException {
-		listContentsObj.listContents();
+		System.out.println("\nPlease wait...");
+		String[] contents = listContentsObj.listContents();
+		for (String item : contents) {
+			if (item == null) {
+				break;
+			}
+			System.out.println(item);
+		}
 
 		// Get the total number of buckets
 		int totalBucketNumber = listContentsObj.totalNumberOfBuckets();
@@ -135,17 +149,29 @@ public class Client {
 
 			if (bucketToMoveTo <= 0 || bucketToMoveTo > totalBucketNumber) {
 				System.out.println("\nSelected bucket does not exist, try again.");
-			} else
+			} else if (bucketToMoveTo == bucketToMoveFrom) {
+				System.out.println("\nItem is already in that bucket, pick a different bucket.");
+			}
+
+			else {
 				bucketToMoveTo_Accepted = true;
+			}
 		}
 
-		moveObj.moveTheObjects(bucketToMoveFrom, itemToMove, bucketToMoveTo);
+		System.out.println(moveObj.moveTheObjects(bucketToMoveFrom, itemToMove, bucketToMoveTo));
 
 	}
 
 	/** Client for when mergeBuckets is to be used */
 	public static void mergeBucketsClient() throws IOException {
-		listContentsObj.listContents();
+		System.out.println("\nPlease wait...");
+		String[] contents = listContentsObj.listContents();
+		for (String item : contents) {
+			if (item == null) {
+				break;
+			}
+			System.out.println(item);
+		}
 		int totalBuckets = listContentsObj.totalNumberOfBuckets();
 		int bucketToRemain = 0;
 		int bucketToDelete = 0;
@@ -176,12 +202,19 @@ public class Client {
 			} else
 				bucketToDelete_Accepted = true;
 		}
-		mergeObj.mergeTheBuckets(bucketToRemain, bucketToDelete);
+		System.out.println(mergeObj.mergeTheBuckets(bucketToRemain, bucketToDelete));
 	}
 
 	/** Client for when splitBucket is to be used */
 	public static void splitBucketClient() {
-		listContentsObj.listContents();
+		System.out.println("\nPlease wait...");
+		String[] contents = listContentsObj.listContents();
+		for (String item : contents) {
+			if (item == null) {
+				break;
+			}
+			System.out.println(item);
+		}
 		int totalBuckets = listContentsObj.totalNumberOfBuckets();
 		int bucketToSplit = 0;
 		int itemSplitPoint = 0;
@@ -218,7 +251,7 @@ public class Client {
 			} else
 				itemSplitPoint_Accepted = true;
 		}
-		splitObj.splitTheBuckets(bucketToSplit, itemSplitPoint);
+		System.out.println(splitObj.splitTheBuckets(bucketToSplit, itemSplitPoint));
 	}
 
 }

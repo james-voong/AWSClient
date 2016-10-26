@@ -21,7 +21,6 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import interfaces.MoveObjects;
 
-
 /** Implementation class of MoveObjects */
 @WebService(endpointInterface = "interfaces.MoveObjects")
 @SOAPBinding(style = Style.RPC)
@@ -34,7 +33,7 @@ public class MoveObjectsImpl implements MoveObjects {
 
 	/** Moves an object from one bucket into another */
 	@Override
-	public void moveTheObjects(int bucketToMoveFrom, int itemToMove, int bucketToMoveTo) {
+	public String moveTheObjects(int bucketToMoveFrom, int itemToMove, int bucketToMoveTo) {
 
 		instantiateClient();
 		int currentBucket = 0;
@@ -76,9 +75,9 @@ public class MoveObjectsImpl implements MoveObjects {
 						object.getObjectMetadata()));
 			}
 		}
-		System.out.println(
-				objectKey + " has been moved from '" + bucketToMoveFromName + "' to '" + bucketToMoveToName + "'");
-
+		String contents = (objectKey + " has been moved from '" + bucketToMoveFromName + "' to '" + bucketToMoveToName
+				+ "'");
+		return contents;
 	}
 
 	public String checkForDuplicateItems(String objectKeyChecker) {

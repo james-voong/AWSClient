@@ -10,9 +10,6 @@ import javax.jws.soap.SOAPBinding.Style;
 public interface MoveObjects {
 
 	/** Moves an object from one bucket to another */
-	public void moveTheObjects(int bucketToMoveFrom, int itemToMove, int bucketToMoveTo);
-
-	// /** Checks for duplicate items within the new bucket and renames it */
-	// public String checkForDuplicateItems(String objectKeyChecker);
+	public String moveTheObjects(int bucketToMoveFrom, int itemToMove, int bucketToMoveTo);
 
 }

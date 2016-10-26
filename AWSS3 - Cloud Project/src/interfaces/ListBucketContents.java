@@ -10,7 +10,7 @@ import javax.jws.soap.SOAPBinding.Style;
 public interface ListBucketContents {
 
 	/** Lists all buckets along with all objects inside them */
-	public void listContents();
+	public String[] listContents();
 
 	/** Returns the total number of buckets */
 	public int totalNumberOfBuckets();

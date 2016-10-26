@@ -30,9 +30,10 @@ public class WebServiceImpl implements WebServiceInterface {
 
 	/** Wrapper that calls the listContents method */
 	@Override
-	public void listContents() {
+	public String[] listContents() {
 		ListBucketContents listObj = new ListBucketContentsImpl();
-		listObj.listContents();
+		String[] contents = listObj.listContents();
+		return contents;
 	}
 
 	/**
@@ -59,27 +60,27 @@ public class WebServiceImpl implements WebServiceInterface {
 
 	/** Wrapper that calls a method to merge buckets */
 	@Override
-	public void mergeTheBuckets(int bucketToRemain, int bucketToDelete) {
+	public String mergeTheBuckets(int bucketToRemain, int bucketToDelete) {
 		MergeBuckets mergeObj = new MergeBucketsImpl();
-		mergeObj.mergeTheBuckets(bucketToRemain, bucketToDelete);
-
+		String contents = mergeObj.mergeTheBuckets(bucketToRemain, bucketToDelete);
+		return contents;
 	}
 
 	/**
 	 * Wrapper that calls a method to move an object from one bucket to another
 	 */
 	@Override
-	public void moveTheObjects(int bucketToMoveFrom, int itemToMove, int bucketToMoveTo) {
+	public String moveTheObjects(int bucketToMoveFrom, int itemToMove, int bucketToMoveTo) {
 		MoveObjects moveObj = new MoveObjectsImpl();
-		moveObj.moveTheObjects(bucketToMoveFrom, itemToMove, bucketToMoveTo);
+		return moveObj.moveTheObjects(bucketToMoveFrom, itemToMove, bucketToMoveTo);
 
 	}
 
 	/** Wrapper that calls a method to split a bucket */
 	@Override
-	public void splitTheBuckets(int bucketToSplit, int itemSplitPoint) {
+	public String splitTheBuckets(int bucketToSplit, int itemSplitPoint) {
 		SplitBuckets splitObj = new SplitBucketsImpl();
-		splitObj.splitTheBuckets(bucketToSplit, itemSplitPoint);
+		return splitObj.splitTheBuckets(bucketToSplit, itemSplitPoint);
 	}
 
 	/** This method instantiates an AmazonS3 client */
@@ -101,9 +102,9 @@ public class WebServiceImpl implements WebServiceInterface {
 		s3.setRegion(myRegion);
 	}
 
-//	/** Getter to return the instantiated client */
-//	public AmazonS3 getClient() {
-//		return s3;
-	//	}
+	// /** Getter to return the instantiated client */
+	// public AmazonS3 getClient() {
+	// return s3;
+	// }
 
 }

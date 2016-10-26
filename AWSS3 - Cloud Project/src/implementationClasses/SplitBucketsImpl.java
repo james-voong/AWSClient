@@ -31,7 +31,7 @@ public class SplitBucketsImpl implements SplitBuckets {
 
 	/** Splits a bucket from a given item point into two buckets */
 	@Override
-	public void splitTheBuckets(int bucketToSplit, int itemSplitPoint) {
+	public String splitTheBuckets(int bucketToSplit, int itemSplitPoint) {
 		instantiateClient();
 		int currentBucket = 0;
 		int currentItem = 0;
@@ -71,7 +71,8 @@ public class SplitBucketsImpl implements SplitBuckets {
 				}
 			}
 		}
-		System.out.println("'" + splitBucketName + "' has been split into '" + newBucketName + "'");
+		String contents = ("'" + splitBucketName + "' has been split into '" + newBucketName + "'");
+		return contents;
 	}
 
 	public String checkForDuplicateBucket(String newBucketName) {

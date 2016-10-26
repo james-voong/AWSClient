@@ -10,6 +10,6 @@ import javax.jws.soap.SOAPBinding.Style;
 public interface MergeBuckets {
 
 	/** Merges two buckets into one */
-	public void mergeTheBuckets(int bucketToRemain, int bucketToDelete);
+	public String mergeTheBuckets(int bucketToRemain, int bucketToDelete);
 
 }
